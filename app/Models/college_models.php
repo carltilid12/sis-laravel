@@ -5,12 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class college extends Model
+
+class college_models extends Model
 {
     use HasFactory;
 
-    protected $table = 'college';
+    protected $table = 'tblcolleges';
+    protected $primaryKey = 'col_id';
+
+    public $timestamps = false;
 
     // Specify the attributes that are mass assignable
-    protected $fillable = ['collegeCode', 'collegeName'];
+    protected $fillable = ['col_code', 'col_name'];
 }
