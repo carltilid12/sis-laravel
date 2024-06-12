@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('college', function (Blueprint $table) {
-            $table->id(); 
-            $table->string('collegeCode')->unique(); 
-            $table->string('collegeName');
+        Schema::create('tblcolleges', function (Blueprint $table) {
+            $table->id('col_id'); 
+            $table->string('col_code')->unique(); 
+            $table->string('col_name');
         });
     }
 
@@ -23,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('college');
+        Schema::dropIfExists('tblcolleges');
     }
 };
