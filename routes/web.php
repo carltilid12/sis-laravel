@@ -40,3 +40,21 @@ Route::post('/colleges', function (Request $request) {
     // Redirect back to the colleges list or another page
     return redirect()->route('colleges');
 })->name('colleges.add');
+
+// Update college route
+Route::post('/colleges/{id}/edit', function (Request $request, $id) {
+    // Validate the incoming data
+    $request->validate([
+        'col_code' => 'required|max:255',
+        'col_name' => 'required|max:255',
+    ]);
+
+    // Find the college by ID and update its attributes
+    $college = college_models::findOrFail($id);
+    $college->col_code = $request->input('col_code');
+    $college->col_name = $request->input('col_name');
+    $college->save();
+
+    // Redirect back to the colleges list or another page
+    return redirect()->route('colleges');
+})->name('colleges.update');
