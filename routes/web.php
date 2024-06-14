@@ -24,7 +24,7 @@ Route::get('/colleges', function () {
     return view('colleges', ['colleges' => $colleges]);
 })->name('colleges');
 
-Route::post('/colleges', function (Request $request) {
+Route::post('/college', function (Request $request) {
     // Validate and handle the incoming data
     $validated = $request->validate([
         'col_code' => 'required|unique:tblcolleges|max:255',
@@ -42,7 +42,7 @@ Route::post('/colleges', function (Request $request) {
 })->name('colleges.add');
 
 // Update college route
-Route::post('/colleges/{id}/edit', function (Request $request, $id) {
+Route::post('/college/{id}', function (Request $request, $id) {
     // Validate the incoming data
     $request->validate([
         'col_code' => 'required|max:255',
@@ -58,3 +58,10 @@ Route::post('/colleges/{id}/edit', function (Request $request, $id) {
     // Redirect back to the colleges list or another page
     return redirect()->route('colleges');
 })->name('colleges.update');
+
+Route::delete('/college/{id}', function ($id) {
+    $college = college_models::findOrFail($id);
+    $college->delete();
+
+    return response()->json(['success' => true]);
+})->name('colleges.delete');

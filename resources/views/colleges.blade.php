@@ -20,6 +20,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
+
                 <!-- Add College Form -->
                 <form action="{{ route('colleges.add') }}" method="POST">
                     @csrf
@@ -47,6 +48,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
+
                         <!-- Edit College Form -->
                         <form id="editCollegeForm" action="" method="POST">
                             @csrf
@@ -60,11 +62,13 @@
                             </div>
                             <button type="submit" class="btn btn-primary">Submit</button>
                         </form>
+
                     </div>
                 </div>
             </div>
         </div>
         
+        {{-- College Table --}}
         <table class="table table-bordered">
             <thead>
                 <tr>
@@ -87,7 +91,7 @@
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                 <li><a href="#" class="edit-btn dropdown-item" data-bs-toggle="modal" data-bs-target="#editCollegeModal">Edit</a></li>
-                                <li><a class="dropdown-item" href="#">Delete</a></li>
+                                <li><a href="#" class="delete-btn dropdown-item" data-id="{{ $college->col_id }}">Delete</a></li>
                             </ul>
                         </div>
                     </td>
@@ -99,7 +103,9 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const editButtons = document.querySelectorAll('.edit-btn');
+            const deleteButtons = document.querySelectorAll('.delete-btn');
 
+            // Edit College Button Javascript
             editButtons.forEach(button => {
                 button.addEventListener('click', function () {
                     const row = this.closest('tr');
@@ -107,13 +113,38 @@
                     const collegeCode = row.getAttribute('data-code');
                     const collegeName = row.getAttribute('data-name');
 
-                    // Populate the form fields with the data attributes
                     document.getElementById('edit-col_code').value = collegeCode;
                     document.getElementById('edit-col_name').value = collegeName;
 
-                    // Update the form action URL
                     const form = document.getElementById('editCollegeForm');
-                    form.setAttribute('action', `/colleges/${collegeId}/edit`);
+                    form.setAttribute('action', `/college/${collegeId}`);
+                });
+            });
+
+            // Delete College Button Javascript
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    const collegeId = this.getAttribute('data-id');
+
+                    if (confirm('Are you sure you want to delete this college?')) {
+                        fetch(`/college/${collegeId}`, {
+                            method: 'DELETE',
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            }
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                const row = document.querySelector(`tr[data-id="${collegeId}"]`);
+                                row.remove();
+                            } else {
+                                alert('An error occurred while deleting the college.');
+                            }
+                        })
+                        .catch(error => console.error('Error:', error));
+                    }
                 });
             });
         });
